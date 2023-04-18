@@ -1,0 +1,65 @@
+version: '3.7'
+
+services:
+
+  postgres:
+    image: postgres:14.5
+    container_name: upload_project_postgres_container
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+#      - POSTGRES_MULTIPLE_DATABASES=upload_projectFr,upload_projectNor,upload_projectSing
+      - POSTGRES_DB=upload_projectFr
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+#      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+
+  web:
+    platform: linux/amd64
+    build: .
+    container_name: upload_project_container
+#    command: >
+#      sh -c "python manage.py makemigrations &&
+#             python manage.py migrate --database='161.35.20.78' &&
+#             python manage.py migrate --database='68.183.108.154' &&
+#             python manage.py migrate --database='157.245.200.109' &&
+#             python manage.py runserver 0.0.0.0:8000"
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/upload_project
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=upload_projectFr
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  celery:
+      restart: always
+      build:
+        context: .
+      command: celery -A upload_project worker -l info
+      volumes:
+        - .:/upload_project
+      environment:
+        - DB_NAME=upload_projectFr
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+      depends_on:
+        - postgres
+        - redis
+        - web
+
+volumes:
+  pgdata:

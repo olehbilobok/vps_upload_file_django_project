@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <style>
+     .gradient-custom-4 {
+          border: medium none;
+          background-image: none;
+          background: blue;
+          float: left;
+          background-color: #000000;
+    }
+
+    a.btn:hover {
+         -webkit-transform: scale(1.1);
+         -moz-transform: scale(1.1);
+         -o-transform: scale(1.1);
+     }
+     a.btn {
+         -webkit-transform: scale(0.8);
+         -moz-transform: scale(0.8);
+         -o-transform: scale(0.8);
+         -webkit-transition-duration: 0.5s;
+         -moz-transition-duration: 0.5s;
+         -o-transition-duration: 0.5s;
+     }
+    </style>
+
+    <div class="container">
+        <div class="d-flex flex-column">
+            <h2><center>Download file info</center></h2>
+                <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"></script>
+                <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+                <div>
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">VPS number</th>
+                          <th scope="col">Location city</th>
+                          <th scope="col">VPS IP</th>
+                          <th scope="col">Download duration, sec</th>
+                          <th scope="col">Created at</th>
+                          <th scope="col">Downloaded file</th>
+                        </tr>
+                      </thead>
+                        {% for info in data %}
+                          <tbody>
+                            <tr>
+
+                              <td>{{info.source_vps.name}}</td>
+                              <td>{{info.source_vps.location}}</td>
+                              <td>{{info.source_vps.ip_address}}</td>
+                              <td>{{info.download_duration}}</td>
+                              <td>{{info.download_time}}</td>
+                              <td>{{info.file.link}}</td>
+                            </tr>
+                          </tbody>
+                        {% endfor %}
+
+                    </table>
+
+                    <hr>
+                </div>
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,32 @@
+<style type="text/css">
+	@media (min-width: 768px) {
+	  html {
+	    font-size: 16px;
+	  }
+	}
+
+	.card-deck .card {
+	  min-width: 220px;
+	}
+
+	.topnav-right {
+  		float: right;
+	}
+
+</style>
+
+<!-- Header -->
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+
+  <nav class="my-2 my-md-0 mr-md-3">
+	  <h5 class="my-0 mr-md-auto font-weight-normal">
+	  	<p class="p-2 text-dark">Hello</p>
+	  </h5>
+      <div class="topnav-right">
+          <a class="p-2 text-dark" href="{% url 'index' %}">Home</a>
+          <a class="p-2 text-dark" href="{% url 'upload' %}">Upload</a>
+          <a class="p-2 text-dark" href="{% url 'files' %}">Files</a>
+          <a class="p-2 text-dark" href="{% url 'downloads' %}">Downloads</a>
+      </div>
+  </nav>
+</div>
