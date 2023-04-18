@@ -82,12 +82,12 @@ DATABASES = {
     },
 
     # Frankfurt DB
-    '161.35.20.78': {
+    '64.226.75.193': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'upload_projectFr',
             'USER': 'postgres',
             'PASSWORD': 'postgres',
-            'HOST': '161.35.20.78',
+            'HOST': '64.226.75.193',
             'PORT': '5432',
         },
     # North_Bergen DB

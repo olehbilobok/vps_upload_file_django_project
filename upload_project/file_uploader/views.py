@@ -49,11 +49,13 @@ def upload_file(request):
         save_file = save_data(path, response)
 
         # Write info about vps to VPS model to db on each server
-        # for ip in [vps.get('ip_address') for vps in vps_list]:
-        #     for vps in vps_list:
-        #         VPS.objects.using(ip).create(name=vps.get('vps_number'),
-        #                                      location=vps.get('city'),
-        #                                      ip_address=vps.get('ip_address'))
+        vps = VPS.objects.all()
+        if not vps:
+            for ip in [vps.get('ip_address') for vps in vps_list]:
+                for vps in vps_list:
+                    VPS.objects.using(ip).create(name=vps.get('vps_number'),
+                                                 location=vps.get('city'),
+                                                 ip_address=vps.get('ip_address'))
 
         # Create file into source vps
 
