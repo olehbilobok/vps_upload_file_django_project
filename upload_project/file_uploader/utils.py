@@ -1,5 +1,4 @@
 import datetime
-import json
 import requests
 import uuid
 from django.http import HttpResponse
@@ -30,11 +29,13 @@ def save_data(path, data):
 
     try:
         with open(path, 'wb') as file:
-            for chunk in data.iter_content(chunk_size=1024):
+            for chunk in data.iter_content(chunk_size=50000):
                 file.write(chunk)
 
     except FileNotFoundError:
         print(f"Error: File '{path.split('/')[-1]}' not found.")
+    except (requests.exceptions.ChunkedEncodingError, requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        print("Error: Network error occurred while saving file.")
 
 
 def file_name(file_link):
@@ -56,23 +57,6 @@ def get_link_data(file_link):
         print(f"HTTPError: {e}")
     except requests.exceptions.Timeout as e:
         print(f"Timeout: {e}")
-
-
-def log_data(path, log_info):
-
-    # Save file info to the downloads.log file
-
-    with open(path, 'a') as f:
-        f.write(json.dumps(log_info) + '\n')
-
-
-def read_log_data(path):
-
-    # Read the file info from downloads.log file
-
-    with open(path, 'r') as f:
-        data = f.readlines()
-        return [json.loads(log) for log in data]
 
 
 def download(path, filename):

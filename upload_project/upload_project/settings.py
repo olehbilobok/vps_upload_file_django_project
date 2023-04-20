@@ -13,7 +13,6 @@ import os.path
 from pathlib import Path
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!ca7k@_-#3u6=6i60mg*v7ok4-xqzo2w80s=)5jxg3%2c5k6-z'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -84,28 +83,28 @@ DATABASES = {
     # Frankfurt DB
     '64.226.75.193': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'upload_projectFr',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '64.226.75.193',
+            'NAME': os.environ.get('EUROPE_DB_NAME'),
+            'USER': os.environ.get('EUROPE_DB_USER'),
+            'PASSWORD': os.environ.get('EUROPE_DB_PASS'),
+            'HOST': os.environ.get('EUROPE_DB_HOST'),
             'PORT': '5432',
         },
     # North_Bergen DB
     '68.183.108.154': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'upload_projectNor',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '68.183.108.154',
+            'NAME': os.environ.get('USA_DB_NAME'),
+            'USER': os.environ.get('USA_DB_USER'),
+            'PASSWORD': os.environ.get('USA_DB_PASS'),
+            'HOST': os.environ.get('USA_DB_HOST'),
             'PORT': '5432',
         },
     # Singapore DB
     '157.245.200.109': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'upload_projectSing',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '157.245.200.109',
+            'NAME': os.environ.get('ASIA_DB_NAME'),
+            'USER': os.environ.get('ASIA_DB_USER'),
+            'PASSWORD': os.environ.get('ASIA_DB_PASS'),
+            'HOST': os.environ.get('ASIA_DB_HOST'),
             'PORT': '5432',
         }
 }
@@ -156,3 +155,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery settings
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis:6379/0',  # host and port of Redis container
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'TIMEOUT': 7200,
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'

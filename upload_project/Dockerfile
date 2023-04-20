@@ -8,6 +8,8 @@ COPY requirements.txt /upload_project/
 
 RUN pip install -r requirements.txt
 
+RUN pip install django-redis
+
 COPY . /upload_project/
 
 EXPOSE 8000

@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    {% load my_filters %}
+
     <style>
      .gradient-custom-4 {
           border: medium none;
@@ -45,16 +47,29 @@
                         </tr>
                       </thead>
                         {% for info in data %}
-                          <tbody>
-                            <tr>
-                              <td>{{info.source_vps.name}}</td>
-                              <td>{{info.source_vps.location}}</td>
-                              <td>{{info.source_vps.ip_address}}</td>
-                              <td>{{info.upload_duration}}</td>
-                              <td>{{info.upload_time}}</td>
-                              <td><a href="{% url 'download' info.link %}">{{info.link}}</a></td>
-                            </tr>
-                          </tbody>
+                            {% if info|model_name == "fileupload" %}
+                              <tbody>
+                                <tr>
+                                  <td>{{info.source_vps.name}}</td>
+                                  <td>{{info.source_vps.location}}</td>
+                                  <td>{{info.source_vps.ip_address}}</td>
+                                  <td>{{info.upload_duration}}</td>
+                                  <td>{{info.created_at}}</td>
+                                  <td><a href="{% url 'download' info.link %}">{{info.link}}</a></td>
+                                </tr>
+                              </tbody>
+                            {% elif info|model_name == "replication" %}
+                              <tbody>
+                                <tr>
+                                  <td>{{info.source_vps.name}} -> {{info.dest_vps.name}}</td>
+                                  <td>{{info.dest_vps.location}}</td>
+                                  <td>{{info.dest_vps.ip_address}}</td>
+                                  <td>{{info.transfer_duration}}</td>
+                                  <td>{{info.created_at}}</td>
+                                  <td><a href="{% url 'download' info.link %}">{{info.link}}</a></td>
+                                </tr>
+                              </tbody>
+                            {% endif %}
                         {% endfor %}
 
                     </table>
