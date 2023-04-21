@@ -11,11 +11,15 @@ from file_uploader.models import FileUpload, VPS, FileDownload, Replication
 def index(request):
 
     # Redirect user to the nearest vps
-    user_ip = request.META.get('REMOTE_ADDR')
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        user_ip = user_ip.split(',')[0]
+    else:
+        user_ip = request.META.get('REMOTE_ADDR')
     nearest_vps = Location().get_nearest_vps(user_ip)
     request.session['nearest_vps'] = nearest_vps
 
-    return redirect(f'http://{nearest_vps.get("ip_address")}/upload')
+    return redirect(f'http://{nearest_vps.get("ip_address")}:8000/upload')
 
 
 def upload_file(request):
