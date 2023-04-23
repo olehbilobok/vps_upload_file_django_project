@@ -14,7 +14,7 @@ class VPS(models.Model):
 
 
 class FileUpload(models.Model):
-    link = models.CharField(max_length=255)
+    link = models.CharField(max_length=1000)
     upload_duration = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     source_vps = models.ForeignKey(VPS, on_delete=models.CASCADE, related_name='files_uploaded')
@@ -45,7 +45,7 @@ class Replication(models.Model):
     source_vps = models.ForeignKey(VPS, on_delete=models.CASCADE, related_name='replications_sent')
     dest_vps = models.ForeignKey(VPS, on_delete=models.CASCADE, related_name='replications_received')
     # file = models.ForeignKey(FileUpload, on_delete=models.CASCADE, related_name='replications')
-    link = models.CharField(max_length=255)
+    link = models.CharField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     transfer_duration = models.IntegerField()
 

@@ -28,6 +28,7 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/upload_project
+      - ~/.ssh:/root/.ssh
     ports:
       - "8000:8000"
     depends_on:
@@ -45,6 +46,7 @@ services:
       command: celery -A upload_project worker -l info
       volumes:
         - .:/upload_project
+        - ~/.ssh:/root/.ssh
       env_file:
         - ./set_env.sh
       depends_on:

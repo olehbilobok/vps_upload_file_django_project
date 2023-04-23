@@ -17,7 +17,6 @@ def index(request):
     else:
         user_ip = request.META.get('REMOTE_ADDR')
     nearest_vps = Location().get_nearest_vps(user_ip)
-    request.session['nearest_vps'] = nearest_vps
 
     return redirect(f'http://{nearest_vps.get("ip_address")}:8000/upload')
 
@@ -25,8 +24,12 @@ def index(request):
 def upload_file(request):
 
     # Upload file to nearest vps
-
-    nearest_vps = request.session.get('nearest_vps')
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        user_ip = user_ip.split(',')[0]
+    else:
+        user_ip = request.META.get('REMOTE_ADDR')
+    nearest_vps = Location().get_nearest_vps(user_ip)
 
     if request.method == "POST":
 
@@ -59,7 +62,12 @@ def upload_file(request):
 
 def get_upload_files(request):
 
-    nearest_vps = request.session.get('nearest_vps')
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        user_ip = user_ip.split(',')[0]
+    else:
+        user_ip = request.META.get('REMOTE_ADDR')
+    nearest_vps = Location().get_nearest_vps(user_ip)
 
     # Get upload data to display for user
     context = {}
@@ -76,7 +84,12 @@ def download_file(request, filename):
 
     # Download file from the nearest vps
 
-    nearest_vps = request.session.get('nearest_vps')
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        user_ip = user_ip.split(',')[0]
+    else:
+        user_ip = request.META.get('REMOTE_ADDR')
+    nearest_vps = Location().get_nearest_vps(user_ip)
 
     start_time = datetime.datetime.utcnow()
 
@@ -100,7 +113,12 @@ def download_file(request, filename):
 
 def get_download_files(request):
 
-    nearest_vps = request.session.get('nearest_vps')
+    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
+    if user_ip:
+        user_ip = user_ip.split(',')[0]
+    else:
+        user_ip = request.META.get('REMOTE_ADDR')
+    nearest_vps = Location().get_nearest_vps(user_ip)
 
     # Get download data to display for user
 

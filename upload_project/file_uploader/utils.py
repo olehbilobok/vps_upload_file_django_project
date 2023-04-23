@@ -29,7 +29,7 @@ def save_data(path, data):
 
     try:
         with open(path, 'wb') as file:
-            for chunk in data.iter_content(chunk_size=50000):
+            for chunk in data.iter_content(chunk_size=2000):
                 file.write(chunk)
 
     except FileNotFoundError:
