@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'file_uploader.middleware.NearestVPSMiddleware'
 ]
 
 ROOT_URLCONF = 'upload_project.urls'

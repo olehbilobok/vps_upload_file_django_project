@@ -16,10 +16,10 @@ def replication(nearest_vps, file,  username, password, path):
             ssh = paramiko.SSHClient()
             ssh.load_system_host_keys()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            key = paramiko.RSAKey.from_private_key_file('root/.ssh/id_rsa', password=password)
+            key = paramiko.RSAKey.from_private_key_file('/root/.ssh/id_rsa', password=password)
             ssh.connect(vps.get('ip_address'), username=username, pkey=key)
             sftp = ssh.open_sftp()
-            sftp.put(path, f"{path}/{file}")
+            sftp.put(path, f'/root/vps_upload_file_django_project/upload_project/file_uploader/uploads/{file}')
             sftp.close()
             ssh.close()
 

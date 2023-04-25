@@ -8,8 +8,10 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    env_file:
-      - ./set_env.sh
+    environment:
+      - POSTGRES_DB=upload_projectFr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - pgdata:/var/lib/postgresql/data/
 
@@ -26,6 +28,7 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/upload_project
+      - ~/.ssh:/root/.ssh
     ports:
       - "8000:8000"
     depends_on:
@@ -43,6 +46,7 @@ services:
       command: celery -A upload_project worker -l info
       volumes:
         - .:/upload_project
+        - ~/.ssh:/root/.ssh
       env_file:
         - ./set_env.sh
       depends_on:
