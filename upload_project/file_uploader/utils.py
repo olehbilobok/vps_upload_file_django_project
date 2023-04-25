@@ -1,7 +1,9 @@
 import datetime
+import mimetypes
+from wsgiref.util import FileWrapper
 import requests
 import uuid
-from django.http import HttpResponse
+from django.http import StreamingHttpResponse
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 from file_uploader.vps import vps_list
@@ -61,10 +63,18 @@ def get_link_data(file_link):
 
 def download(path, filename):
 
-    with open(path, 'rb') as f:
-        response = HttpResponse(f, content_type='application/octet-stream')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        return response
+    chunk_size = 8192
+
+    response = StreamingHttpResponse(
+        FileWrapper(
+            open(path, "rb"),
+            chunk_size,
+        ),
+        content_type=mimetypes.guess_type(path)[0],
+    )
+    response["Content-Disposition"] = f"attachment; filename={filename}"
+
+    return response
 
 
 class Location:

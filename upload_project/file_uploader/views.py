@@ -3,7 +3,7 @@ from operator import attrgetter
 from django.shortcuts import render, redirect
 import datetime
 import os
-from file_uploader.utils import Location, save_data, file_name, get_link_data, download
+from file_uploader.utils import save_data, file_name, get_link_data, download
 from file_uploader.tasks import replication
 from file_uploader.models import FileUpload, VPS, FileDownload, Replication
 
@@ -11,12 +11,8 @@ from file_uploader.models import FileUpload, VPS, FileDownload, Replication
 def index(request):
 
     # Redirect user to the nearest vps
-    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if user_ip:
-        user_ip = user_ip.split(',')[0]
-    else:
-        user_ip = request.META.get('REMOTE_ADDR')
-    nearest_vps = Location().get_nearest_vps(user_ip)
+
+    nearest_vps = request.nearest_vps
 
     return redirect(f'http://{nearest_vps.get("ip_address")}:8000/upload')
 
@@ -24,12 +20,8 @@ def index(request):
 def upload_file(request):
 
     # Upload file to nearest vps
-    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if user_ip:
-        user_ip = user_ip.split(',')[0]
-    else:
-        user_ip = request.META.get('REMOTE_ADDR')
-    nearest_vps = Location().get_nearest_vps(user_ip)
+
+    nearest_vps = request.nearest_vps
 
     if request.method == "POST":
 
@@ -43,7 +35,8 @@ def upload_file(request):
 
         save_file = save_data(path, response)
 
-        # Create file into source vps
+        # Save data about file upload
+
         source_vps = VPS.objects.using(nearest_vps.get('ip_address')).filter(name=nearest_vps.get('vps_number')).first()
 
         FileUpload.objects.using(nearest_vps.get('ip_address')).create(link=file_basename,
@@ -62,14 +55,10 @@ def upload_file(request):
 
 def get_upload_files(request):
 
-    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if user_ip:
-        user_ip = user_ip.split(',')[0]
-    else:
-        user_ip = request.META.get('REMOTE_ADDR')
-    nearest_vps = Location().get_nearest_vps(user_ip)
+    nearest_vps = request.nearest_vps
 
     # Get upload data to display for user
+
     context = {}
     upload_data = FileUpload.objects.using(nearest_vps.get('ip_address')).all()
     replica = Replication.objects.using(nearest_vps.get('ip_address')).all()
@@ -84,12 +73,7 @@ def download_file(request, filename):
 
     # Download file from the nearest vps
 
-    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if user_ip:
-        user_ip = user_ip.split(',')[0]
-    else:
-        user_ip = request.META.get('REMOTE_ADDR')
-    nearest_vps = Location().get_nearest_vps(user_ip)
+    nearest_vps = request.nearest_vps
 
     start_time = datetime.datetime.utcnow()
 
@@ -104,21 +88,23 @@ def download_file(request, filename):
     # Save relevant information about download to db
 
     file = FileUpload.objects.using(nearest_vps.get('ip_address')).filter(link=filename).first()
-    FileDownload.objects.using(nearest_vps.get('ip_address')).create(file=file,
-                                                                     download_duration=duration,
-                                                                     source_vps=file.source_vps)
+    source_vps = VPS.objects.using(nearest_vps.get('ip_address')).filter(name=nearest_vps.get('vps_number')).first()
+    if file is not None:
+        FileDownload.objects.using(nearest_vps.get('ip_address')).create(link=file.link,
+                                                                         download_duration=duration,
+                                                                         source_vps=source_vps)
+    else:
+        file = Replication.objects.using(nearest_vps.get('ip_address')).filter(link=filename).first()
+        FileDownload.objects.using(nearest_vps.get('ip_address')).create(link=file.link,
+                                                                         download_duration=duration,
+                                                                         source_vps=source_vps)
 
     return response
 
 
 def get_download_files(request):
 
-    user_ip = request.META.get('HTTP_X_FORWARDED_FOR')
-    if user_ip:
-        user_ip = user_ip.split(',')[0]
-    else:
-        user_ip = request.META.get('REMOTE_ADDR')
-    nearest_vps = Location().get_nearest_vps(user_ip)
+    nearest_vps = request.nearest_vps
 
     # Get download data to display for user
 
