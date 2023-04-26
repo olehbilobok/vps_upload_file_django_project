@@ -21,8 +21,15 @@ The project dockerized and consists with four services:  django, postgres, celer
 - download file
 
 
+## Links
 
+Website is accessible from following urls
 
+For redirecting to the appropriate server can be used vpn
+
+ - [Europe Server](http://64.226.75.193:8000)
+ - [USA Server](http://68.183.108.154:8000)
+ - [Asia Server](http://157.245.200.109:8000)
 
 
 
