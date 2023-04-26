@@ -48,6 +48,28 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo apt-get install git
 ```
 
+SSH settings between servers
+
+Europe server:
+
+```bash
+ssh-keygen
+ssh-copy-id 157.245.200.109
+ssh-copy-id 68.183.108.154
+```
+USA server:
+```bash
+ssh-keygen
+ssh-copy-id 157.245.200.109
+ssh-copy-id 64.226.75.193
+```
+Asia server:
+```bash
+ssh-keygen
+ssh-copy-id 68.183.108.154
+ssh-copy-id 64.226.75.193
+```
+
 Clone the project
 
 ```bash
